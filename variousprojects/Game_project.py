@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-4D Hyperflight v6 — метеориты и астероиды с деталями поверхности.
-""" 
 import pygame, math, random
 
 pygame.init()
 W, H = 1000, 720
 screen = pygame.display.set_mode((W, H))
-pygame.display.set_caption("4D Hyperflight")
+pygame.display.set_caption("Космический корабль")
 clock = pygame.time.Clock()
 FPS = 60
 
@@ -29,9 +25,7 @@ SLICE_W = 25.0
 SHIP_LIMIT_X = 550.0
 SHIP_LIMIT_Y = 390.0
 
-# ============================================================
-#                  МАТЕМАТИКА
-# ============================================================
+
 class V4:
     __slots__ = ('x','y','z','w')
     def __init__(s, x=0.0, y=0.0, z=0.0, w=0.0):
@@ -84,9 +78,6 @@ def get_glow(color, radius):
     if len(_glow) < 300: _glow[key] = s
     return s
 
-# ============================================================
-#              ПАЛИТРЫ КАМНЯ
-# ============================================================
 ROCK_PALETTES = {
     'gray': {
         'shades': [(175, 175, 178), (140, 140, 143),
@@ -110,9 +101,6 @@ ROCK_PALETTES = {
     },
 }
 
-# ============================================================
-#              ГЕНЕРАЦИЯ МЕША КАМНЯ
-# ============================================================
 def make_rock_mesh(size, seed, n_ring, m_rings, irregularity):
     """
     Низкополигональный камень.
@@ -160,9 +148,6 @@ def make_rock_mesh(size, seed, n_ring, m_rings, irregularity):
         faces.append([south, rings[-1][n], rings[-1][(n+1) % n_ring]])
     return verts, faces
 
-# ============================================================
-#              АСТЕРОИД / МЕТЕОРИТ
-# ============================================================
 class Asteroid:
     KINDS = {
         'meteorite': {
@@ -448,9 +433,7 @@ class Asteroid:
         pygame.draw.rect(screen, col, (x, y, fill, h))
         pygame.draw.rect(screen, (180, 200, 230), (x, y, w, h), 1)
 
-# ============================================================
-#              КОРАБЛЬ
-# ============================================================
+
 SHIP_V = [
     (0, 0, 62), (-10, 8, 15), (10, 8, 15), (-10, -6, 15), (10, -6, 15),
     (-10, 8, -25), (10, 8, -25), (-10, -6, -25), (10, -6, -25),
@@ -513,9 +496,6 @@ class Ship:
         if self.invuln > 0: self.invuln -= dt
         self.engine_pulse += dt * (12 + abs(sp) / 60)
 
-# ============================================================
-#              ПЛАНЕТЫ / ЧАСТИЦЫ / ЗВЁЗДЫ
-# ============================================================
 class FarPlanet:
     def __init__(self):
         self.reset(random.uniform(4000, 9000))
@@ -638,10 +618,6 @@ class StarField:
                 if g: screen.blit(g, (int(sx)-size*4, int(sy)-size*4),
                                   special_flags=pygame.BLEND_ADD)
             pygame.draw.circle(screen, col, (int(sx), int(sy)), size)
-
-# ============================================================
-#              КНОПКА
-# ============================================================
 class Button:
     def __init__(self, x, y, w, h, text, color):
         self.rect = pygame.Rect(x, y, w, h)
@@ -675,9 +651,6 @@ class Button:
         img = self.font.render(self.text, True, WHITE)
         surf.blit(img, img.get_rect(center=self.rect.center))
 
-# ============================================================
-#              ИГРА
-# ============================================================
 class Game:
     def __init__(self):
         self.state = "menu"
@@ -935,7 +908,7 @@ class Game:
                     screen.blit(g, (int(sx)-sz, int(sy)-sz),
                                 special_flags=pygame.BLEND_ADD)
 
-    # ---------- HUD ----------
+    
     def panel(self, r, alpha=200):
         s = pygame.Surface((r.w, r.h), pygame.SRCALPHA)
         pygame.draw.rect(s, (*PANEL, alpha), (0,0,r.w,r.h), border_radius=10)
@@ -1100,7 +1073,7 @@ class Game:
             ov.fill((0,220,255, int(70*self.flash)))
             screen.blit(ov, (0,0), special_flags=pygame.BLEND_ADD)
 
-# ============================================================
+
 def main():
     g = Game()
     running = True
@@ -1112,6 +1085,5 @@ def main():
         pygame.display.flip()
         dt = min(clock.tick(FPS) / 1000.0, 0.05)
     pygame.quit()
-
 if __name__ == "__main__":
     main()
