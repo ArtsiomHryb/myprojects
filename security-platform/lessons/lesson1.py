@@ -13,7 +13,7 @@ print("\nСпособ 2 (f-строка):")
 print(f"Меня зовут {name}, мне {age} лет, я живу в {city}")
 
 print("\nСпособ 3 (конкатенация):")
-print("Меня зовут " + name + ", мне " + str(age), " лет, я живу в " + city)
+print("Меня зовут " + name + ", мне " + str(age) + " лет, я живу в " + city)
 
 current_year = 2026
 birth_year = current_year - age
@@ -22,8 +22,8 @@ print(f"\nЯ родился в {birth_year} году")
 print(f"\nТип переменной age: {type(age)}")
 print(f"Тип переменной height: {type(height)}")
 
-name = str(input ("Как тебя зовут? "))
-age = int(input ("Сколько тебе лет? "))
+name = input("Как тебя зовут? ")
+age = int(input("Сколько тебе лет? "))
 print(f"Привет, {name}! Тебе {age}")
 print(f"Ты прожил примерно {age * 365}")
 print(f"Ты родился в {current_year - age} году.")
