@@ -14,7 +14,7 @@
     as         def        from       nonlocal   while
     assert     del        global     not        with
     async      elif       if         or         yield
-    '''
+'''
 
 userName = "Grand" #Camel case - каждое новое подслово в наименовании переменной начинается с большой буквы.
 user_name = "Artsiom" #Underscore notation - подслова в наименовании переменной разделяются знаком подчеркивания.
