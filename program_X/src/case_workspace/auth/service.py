@@ -151,6 +151,44 @@ class AuthService:
             )
         )
 
+    def register_user(
+        self,
+        *,
+        login: str,
+        password: str,
+        full_name: str,
+        position: str = "",
+        rank: str = "",
+        organization_name: str = "",
+        organ_code: str = "",
+        territorial_code: str = "",
+    ) -> UserAccount:
+        if not self.has_users():
+            raise errors.AuthError("Сначала должен быть зарегистрирован администратор.")
+        if not login.strip():
+            raise errors.AuthError("Логин не может быть пустым.")
+        if self.session.scalar(
+            select(UserAccount).where(UserAccount.login == login.strip().lower())
+        ):
+            raise errors.AuthError(f"Логин '{login}' уже занят.")
+        policy_errors = security.validate_password_policy(password)
+        if policy_errors:
+            raise errors.PasswordPolicyError(" ".join(policy_errors))
+        user = UserAccount(
+            login=login.strip().lower(),
+            password_hash=security.hash_password(password),
+            role=Role.USER,
+            full_name=full_name.strip(),
+            position=position.strip(),
+            rank=rank.strip(),
+            organization_name=organization_name.strip(),
+            organ_code=organ_code.strip(),
+            territorial_code=territorial_code.strip(),
+        )
+        self.session.add(user)
+        self.session.commit()
+        return user
+
     def set_active(self, admin: UserAccount, user_id: int, active: bool) -> None:
         if admin.role != Role.ADMIN:
             raise errors.AuthError("Только администратор.")

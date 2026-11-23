@@ -102,6 +102,25 @@ class Case(Base):
     )
 
 
+    @property
+    def accused_name(self) -> str:
+        from case_workspace.participants.models import PartyRole
+
+        for p in self.parties:
+            if p.role == PartyRole.ACCUSED:
+                return p.full_name
+        return ""
+
+    @property
+    def victim_name(self) -> str:
+        from case_workspace.participants.models import PartyRole
+
+        for p in self.parties:
+            if p.role == PartyRole.VICTIM:
+                return p.full_name
+        return ""
+
+
 class CaseEvent(Base):
     __tablename__ = "case_event"
 
@@ -150,3 +169,9 @@ class Note(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
+
+class CaseDesktopPosition(Base):
+    __tablename__ = "case_desktop_position"
+
+    case_id: Mapped[int] = mapped_column(ForeignKey("case.id"), primary_key=True)
+    order_index: Mapped[int] = mapped_column(Integer, default=0, index=True)

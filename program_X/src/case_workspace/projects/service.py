@@ -80,6 +80,7 @@ class CaseService:
         self.session.flush()
         self.session.add(CaseEvent(case_id=case.id, type=EventType.INITIATED, date=initiated_at))
         self.session.commit()
+        self.ensure_position(case.id)
         return case
 
     def list_cases(
@@ -160,3 +161,54 @@ class CaseService:
             parent_case_id=parent_case_id,
             is_episode=True,
         )
+    # --- порядок на рабочем столе ---
+    def get_desktop_order_map(self) -> dict[int, int]:
+        from case_workspace.projects.models import CaseDesktopPosition
+
+        rows = self.session.scalars(select(CaseDesktopPosition)).all()
+        return {r.case_id: r.order_index for r in rows}
+
+    def set_desktop_order(self, case_id: int, order_index: int) -> None:
+        from case_workspace.projects.models import CaseDesktopPosition
+
+        row = self.session.get(CaseDesktopPosition, case_id)
+        if row is None:
+            row = CaseDesktopPosition(case_id=case_id, order_index=order_index)
+            self.session.add(row)
+        else:
+            row.order_index = order_index
+        self.session.commit()
+
+    def set_desktop_orders_bulk(self, pairs: list[tuple[int, int]]) -> None:
+        from case_workspace.projects.models import CaseDesktopPosition
+
+        for case_id, idx in pairs:
+            row = self.session.get(CaseDesktopPosition, case_id)
+            if row is None:
+                self.session.add(
+                    CaseDesktopPosition(case_id=case_id, order_index=idx)
+                )
+            else:
+                row.order_index = idx
+        self.session.commit()
+
+    def reset_desktop_order(self) -> None:
+        from case_workspace.projects.models import CaseDesktopPosition
+
+        self.session.query(CaseDesktopPosition).delete()
+        self.session.commit()
+
+    def ensure_position(self, case_id: int) -> None:
+        from case_workspace.projects.models import CaseDesktopPosition
+
+        if self.session.get(CaseDesktopPosition, case_id) is None:
+            max_idx = self.session.scalar(
+                select(CaseDesktopPosition.order_index)
+                .order_by(CaseDesktopPosition.order_index.desc())
+                .limit(1)
+            )
+            next_idx = (max_idx or 0) + 1
+            self.session.add(
+                CaseDesktopPosition(case_id=case_id, order_index=next_idx)
+            )
+            self.session.commit()

@@ -70,4 +70,31 @@ QPushButton#primary:hover {
 QPushButton#primary:disabled {
     background-color: #A5B4FC;
 }
+
+QPushButton#linkButton {
+    background: transparent;
+    border: none;
+    color: #4F46E5;
+    text-decoration: underline;
+    font-size: 12px;
+    padding: 2px 4px;
+}
+QPushButton#linkButton:hover {
+    color: #4338CA;
+}
+QPushButton#togglePassword {
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 0;
+}
+QPushButton#togglePassword:hover {
+    background-color: #F1F3F5;
+    border-color: #E5E7EB;
+}
+QPushButton#togglePassword:checked {
+    background-color: #EEF2FF;
+    border-color: #E5E7EB;
+}
+
 """

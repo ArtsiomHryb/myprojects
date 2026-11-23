@@ -11,6 +11,11 @@ from case_workspace.auth.service import AuthService
 from case_workspace.db.base import init_db, session_factory
 from case_workspace.db.models import UserAccount
 from case_workspace.logging_setup import setup_logging
+from case_workspace.identifiers.service import IdentifierService
+from case_workspace.crypto.services import CryptoService, SocialService
+from case_workspace.documents.services import DocumentService
+from case_workspace.templates.service import TemplateService
+from case_workspace.timetracking.service import TimeService
 from case_workspace.participants.service import PartyService
 from case_workspace.projects.service import CaseService
 from case_workspace.ui.login_window import LoginWindow
@@ -42,26 +47,34 @@ class Application:
         session = self.Session()
         auth = AuthService(session)
         if auth.has_users():
-            self.login_window = LoginWindow(auth, self._on_login_success)
+            self.login_window = LoginWindow(
+                auth,
+                self._on_login_success,
+                on_recover=self._on_recover_password,
+                on_register=self._on_register_new_account,
+            )
             self.login_window.show()
         else:
             self.register_window = RegisterWindow(auth, self._on_login_success)
             self.register_window.show()
 
     def _on_login_success(self, user: UserAccount) -> None:
-        # Новая сессия для рабочих сервисов
         session = self.Session()
         auth = AuthService(session)
-        # Перезагружаем пользователя в этой сессии
         user = session.get(UserAccount, user.id)
         case_service = CaseService(session)
         party_service = PartyService(session)
+        identifier_service = IdentifierService(session)
+        crypto_service = CryptoService(session)
+        social_service = SocialService(session)
+        document_service = DocumentService(session)
+        template_service = TemplateService(session)
+        time_service = TimeService(session)
 
         self.main_window = MainWindow(
-            user,
-            auth,
-            case_service,
-            party_service,
+            user, auth, case_service, party_service, identifier_service,
+            crypto_service, social_service, document_service, template_service,
+            time_service, session,
             on_logout=self._on_logout,
         )
         self.main_window.show()
@@ -76,6 +89,21 @@ class Application:
     def _on_logout(self) -> None:
         self.main_window = None
         self._show_entry()
+
+    def _on_recover_password(self) -> None:
+        from case_workspace.ui.recover_password_dialog import RecoverPasswordDialog
+        dlg = RecoverPasswordDialog()
+        dlg.exec()
+
+    def _on_register_new_account(self) -> None:
+        if self.login_window is None:
+            return
+        from case_workspace.ui.new_account_dialog import NewAccountDialog
+        dlg = NewAccountDialog(self.login_window.auth)
+        if dlg.exec() and dlg.created:
+            self.login_window.login.setText(dlg.created.login)
+            self.login_window.password.clear()
+            self.login_window.password.setFocus()
 
     def run(self) -> int:
         return self.qt_app.exec()

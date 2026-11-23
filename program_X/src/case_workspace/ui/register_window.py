@@ -80,14 +80,14 @@ class RegisterWindow(QWidget):
         self.login.setPlaceholderText("например, admin")
         self.password = QLineEdit()
         self.password.setEchoMode(QLineEdit.Password)
-        self.password.setPlaceholderText("8–10 символов")
+        self.password.setPlaceholderText("от 6 до 26 символов")
         self.password2 = QLineEdit()
         self.password2.setEchoMode(QLineEdit.Password)
         af.addRow("Логин:", self.login)
         af.addRow("Пароль:", self.password)
         af.addRow("Повтор пароля:", self.password2)
         hint = QLabel(
-            "Требования к паролю: 8–10 символов, минимум 2 заглавные, "
+            "Требования к паролю: от 6 до 26 символов, минимум 2 заглавные, "
             "2 строчные, 1 цифра, 1 специальный символ."
         )
         hint.setObjectName("hint")

@@ -25,6 +25,18 @@ from case_workspace.participants.service import PartyService
 from case_workspace.projects.models import Case
 from case_workspace.projects.service import CaseService
 from case_workspace.ui.party_dialog import PartyDialog
+from case_workspace.identifiers.service import IdentifierService
+from case_workspace.ui.identifiers_tab import IdentifiersTab
+from case_workspace.ui.crypto_wallets_tab import CryptoWalletsTab
+from case_workspace.ui.social_accounts_tab import SocialAccountsTab
+from case_workspace.crypto.services import CryptoService, SocialService
+from case_workspace.documents.services import DocumentService
+from case_workspace.templates.service import TemplateService
+from case_workspace.ui.documents_tab import DocumentsTab
+from case_workspace.legal.service import LegalService
+from case_workspace.ui.article_window import ArticleWindow
+from case_workspace.ui.time_tracking_tab import TimeTrackingTab
+from case_workspace.timetracking.service import TimeService
 
 
 class CaseWindow(QWidget):
@@ -34,6 +46,12 @@ class CaseWindow(QWidget):
         user: UserAccount,
         case_service: CaseService,
         party_service: PartyService,
+        identifier_service: IdentifierService,
+        crypto_service: CryptoService,
+        social_service: SocialService,
+        document_service: DocumentService,
+        template_service: TemplateService,
+        time_service: TimeService,
         on_close=None,
     ) -> None:
         super().__init__()
@@ -41,6 +59,12 @@ class CaseWindow(QWidget):
         self.user = user
         self.case_service = case_service
         self.party_service = party_service
+        self.identifier_service = identifier_service
+        self.crypto_service = crypto_service
+        self.social_service = social_service
+        self.document_service = document_service
+        self.template_service = template_service
+        self.time_service = time_service
         self.on_close = on_close
 
         self.setWindowTitle(f"Дело {case.case_number or '— эпизод —'}")
@@ -73,10 +97,32 @@ class CaseWindow(QWidget):
 
         self.tabs.addTab(self._build_overview_tab(), "Обзор")
         self.tabs.addTab(self._build_parties_tab(), "Участники")
-        self.tabs.addTab(self._placeholder("Документы будут добавлены на этапе 4."), "Документы")
-        self.tabs.addTab(
-            self._placeholder("Идентификаторы будут добавлены на этапе 3."), "Идентификаторы"
+
+        self.time_tab = TimeTrackingTab(self.case.id, self.time_service, self)
+        self.tabs.addTab(self.time_tab, "Тайминг")
+
+        self.documents_tab = DocumentsTab(
+            self.case.id,
+            self.document_service,
+            self.template_service,
+            self.party_service,
+            self,
         )
+        self.tabs.addTab(self.documents_tab, "Документы")
+        self.identifiers_tab = IdentifiersTab(
+            self.case.id, self.identifier_service, self.party_service, self
+        )
+        self.tabs.addTab(self.identifiers_tab, "Идентификаторы")
+
+        self.wallets_tab = CryptoWalletsTab(
+            self.case.id, self.crypto_service, self.party_service, self
+        )
+        self.tabs.addTab(self.wallets_tab, "Криптокошельки")
+
+        self.socials_tab = SocialAccountsTab(
+            self.case.id, self.social_service, self.party_service, self
+        )
+        self.tabs.addTab(self.socials_tab, "Учётные записи")
 
         # Кнопка "Закрыть"
         bottom = QHBoxLayout()
@@ -111,10 +157,32 @@ class CaseWindow(QWidget):
             row.addWidget(lbl)
             row.addWidget(val)
             row.addStretch()
+            if label == "Статья:" and self.case.article_code:
+                btn_article = QPushButton("📖 Статья")
+                btn_article.clicked.connect(self._open_article)
+                row.addWidget(btn_article)
+                btn_comment = QPushButton("💬 Комментарии")
+                btn_comment.clicked.connect(self._open_comments)
+                row.addWidget(btn_comment)
             layout.addLayout(row)
 
         layout.addStretch()
         return w
+
+    def _open_article(self) -> None:
+        legal = LegalService(self.case_service.session)
+        window = ArticleWindow(
+            self.case.article_code, self.case.article_part, legal, self
+        )
+        window.exec()
+
+    def _open_comments(self) -> None:
+        from PySide6.QtCore import QUrl
+        from PySide6.QtGui import QDesktopServices
+
+        legal = LegalService(self.case_service.session)
+        url = legal.build_comment_search_url(self.case.article_code, self.case.article_part)
+        QDesktopServices.openUrl(QUrl(url))
 
     def _build_parties_tab(self) -> QWidget:
         w = QWidget()
@@ -230,10 +298,32 @@ class CaseWindow(QWidget):
             self.tabs.removeTab(0)
         self.tabs.addTab(self._build_overview_tab(), "Обзор")
         self.tabs.addTab(self._build_parties_tab(), "Участники")
-        self.tabs.addTab(self._placeholder("Документы будут добавлены на этапе 4."), "Документы")
-        self.tabs.addTab(
-            self._placeholder("Идентификаторы будут добавлены на этапе 3."), "Идентификаторы"
+
+        self.time_tab = TimeTrackingTab(self.case.id, self.time_service, self)
+        self.tabs.addTab(self.time_tab, "Тайминг")
+
+        self.documents_tab = DocumentsTab(
+            self.case.id,
+            self.document_service,
+            self.template_service,
+            self.party_service,
+            self,
         )
+        self.tabs.addTab(self.documents_tab, "Документы")
+        self.identifiers_tab = IdentifiersTab(
+            self.case.id, self.identifier_service, self.party_service, self
+        )
+        self.tabs.addTab(self.identifiers_tab, "Идентификаторы")
+
+        self.wallets_tab = CryptoWalletsTab(
+            self.case.id, self.crypto_service, self.party_service, self
+        )
+        self.tabs.addTab(self.wallets_tab, "Криптокошельки")
+
+        self.socials_tab = SocialAccountsTab(
+            self.case.id, self.social_service, self.party_service, self
+        )
+        self.tabs.addTab(self.socials_tab, "Учётные записи")
         self._refresh_parties()
 
     def _on_close(self) -> None:

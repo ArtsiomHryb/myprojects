@@ -22,10 +22,10 @@ def verify_password(password: str, password_hash: str) -> bool:
 
 
 def validate_password_policy(password: str) -> list[str]:
-    """8–10 символов, ≥2 заглавные, ≥2 строчные, ≥1 цифра, ≥1 символ."""
+    """6–26 символов, ≥2 заглавные, ≥2 строчные, ≥1 цифра, ≥1 символ."""
     errors: list[str] = []
-    if not (8 <= len(password) <= 10):
-        errors.append("Пароль должен быть от 8 до 10 символов.")
+    if not (6 <= len(password) <= 26):
+        errors.append("Пароль должен быть от 6 до 26 символов.")
     if sum(1 for c in password if c.isupper()) < 2:
         errors.append("Нужно минимум 2 заглавные буквы.")
     if sum(1 for c in password if c.islower()) < 2:
