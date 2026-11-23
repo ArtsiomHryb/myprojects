@@ -20,7 +20,7 @@ from aiogram.types import (
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 # ------------------------- Настройки -------------------------
-BOT_TOKEN = os.getenv("BOT_TOKEN", "8632216406:AAHafYGI3CcJkE9TvPfSnXGI2rJWRyhLXbM")
+BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 DB_PATH = os.getenv("DB_PATH", "people.db")
 
 logging.basicConfig(level=logging.INFO)
