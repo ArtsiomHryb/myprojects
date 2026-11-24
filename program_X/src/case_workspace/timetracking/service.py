@@ -56,7 +56,7 @@ class TimeService:
             return running
         entry = self.get_or_create(case_id)
         entry.is_running = True
-        entry.started_at = datetime.utcnow()
+        entry.started_at = datetime.now(UTC)
         self.session.commit()
         return entry
 
@@ -66,7 +66,7 @@ class TimeService:
             return None
         if running.started_at:
             running.accumulated_seconds += int(
-                (datetime.utcnow() - running.started_at).total_seconds()
+                (datetime.now(UTC) - running.started_at).total_seconds()
             )
         running.is_running = False
         running.started_at = None

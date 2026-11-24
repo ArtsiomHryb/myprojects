@@ -203,8 +203,8 @@ class DocumentService:
             },
             ensure_ascii=False,
         )
-        doc.rendered_at = datetime.utcnow()
-        doc.saved_at = datetime.utcnow()
+        doc.rendered_at = datetime.now(UTC)
+        doc.saved_at = datetime.now(UTC)
 
         self._backup_to_locations(doc, docx_path)
         if pdf_path:

@@ -42,7 +42,7 @@ class UserAccount(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     last_login_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
@@ -56,7 +56,7 @@ class AuthAttemptLog(Base):
     result: Mapped[str] = mapped_column(String(32))
     attempt_number: Mapped[int] = mapped_column(Integer, default=0)
     lockout_level: Mapped[int] = mapped_column(Integer, default=0)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class AppSetting(Base):

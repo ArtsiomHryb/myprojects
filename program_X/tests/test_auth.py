@@ -87,7 +87,7 @@ def test_lockout_expires_and_resets(session) -> None:
 
     # Принудительно истекаем блокировку
     stored = session.get(UserAccount, user.id)
-    stored.locked_until = datetime.utcnow() - timedelta(minutes=1)
+    stored.locked_until = datetime.now(UTC) - timedelta(minutes=1)
     session.commit()
 
     authed = auth.authenticate("admin", VALID_PASSWORD)

@@ -133,6 +133,10 @@ class MainWindow(QMainWindow):
             self.btn_users.clicked.connect(self._open_users)
             header.addWidget(self.btn_users)
 
+            self.btn_bot = QPushButton("Бот")
+            self.btn_bot.clicked.connect(self._open_bot)
+            header.addWidget(self.btn_bot)
+
         self.btn_logout = QPushButton("Выйти")
         self.btn_logout.clicked.connect(self._logout)
         header.addWidget(self.btn_logout)

@@ -92,9 +92,9 @@ class Case(Base):
 
     owner_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"), index=True)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
     parties: Mapped[list["Party"]] = relationship(
@@ -130,7 +130,7 @@ class CaseEvent(Base):
     date: Mapped[date] = mapped_column(Date)
     to_address: Mapped[str] = mapped_column(String(255), default="")
     comment: Mapped[str] = mapped_column(Text, default="")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class DeadlineExtension(Base):
@@ -141,7 +141,7 @@ class DeadlineExtension(Base):
     old_deadline: Mapped[date] = mapped_column(Date)
     new_deadline: Mapped[date] = mapped_column(Date)
     reason: Mapped[str] = mapped_column(String(512), default="")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class Tag(Base):
@@ -165,9 +165,9 @@ class Note(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     case_id: Mapped[int] = mapped_column(ForeignKey("case.id"), index=True)
     text: Mapped[str] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
 class CaseDesktopPosition(Base):

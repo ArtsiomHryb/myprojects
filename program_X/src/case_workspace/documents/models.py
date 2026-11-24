@@ -67,13 +67,13 @@ class Document(Base):
     edited_manually: Mapped[bool] = mapped_column(Boolean, default=False)
     file_paths: Mapped[str] = mapped_column(Text, default="")  # JSON
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     rendered_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     sent_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     saved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     printed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
 
@@ -86,7 +86,7 @@ class DocumentVersion(Base):
     file_path: Mapped[str] = mapped_column(String(1024))
     pdf_path: Mapped[str] = mapped_column(String(1024), default="")
     change_reason: Mapped[str] = mapped_column(String(255), default="")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
 
 
 class StorageLocation(Base):
@@ -112,7 +112,7 @@ class BackupRecord(Base):
     )
     file_name: Mapped[str] = mapped_column(String(255), default="")
     destination: Mapped[str] = mapped_column(String(1024), default="")
-    at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     ok: Mapped[bool] = mapped_column(Boolean, default=False)
     size: Mapped[int] = mapped_column(Integer, default=0)
     sha256: Mapped[str] = mapped_column(String(64), default="")

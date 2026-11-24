@@ -228,7 +228,7 @@ class LoginWindow(QWidget):
     def _tick_lock(self) -> None:
         if self._locked_until is None:
             return
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         if now >= self._locked_until:
             self._timer.stop()
             self._locked_until = None

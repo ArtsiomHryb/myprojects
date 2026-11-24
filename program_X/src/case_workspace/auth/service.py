@@ -65,7 +65,7 @@ class AuthService:
 
     def authenticate(self, login: str, password: str) -> UserAccount:
         login_norm = login.strip().lower()
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         user = self.session.scalar(select(UserAccount).where(UserAccount.login == login_norm))
         if user is None:
             self._log(login_norm, "invalid", 0, 0)

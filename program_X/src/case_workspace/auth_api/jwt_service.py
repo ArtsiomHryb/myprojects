@@ -36,7 +36,7 @@ class ApiAuthService:
         user: UserAccount = self.auth.authenticate(username, password)
 
         jti = secrets.token_urlsafe(32)
-        expires_at = datetime.utcnow() + timedelta(hours=TOKEN_TTL_HOURS)
+        expires_at = datetime.now(UTC) + timedelta(hours=TOKEN_TTL_HOURS)
 
         payload = {
             "sub": str(user.id),
@@ -84,7 +84,7 @@ class ApiAuthService:
         if st is None or st.revoked_at is not None:
             return None
 
-        st.last_activity = datetime.utcnow()
+        st.last_activity = datetime.now(UTC)
         self.session.commit()
         return payload
 
@@ -92,7 +92,7 @@ class ApiAuthService:
         st = self.session.scalar(select(SessionToken).where(SessionToken.jti == jti))
         if st is None:
             return False
-        st.revoked_at = datetime.utcnow()
+        st.revoked_at = datetime.now(UTC)
         self.session.commit()
         return True
 
@@ -106,7 +106,7 @@ class ApiAuthService:
             )
         )
         count = 0
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         for st in rows:
             st.revoked_at = now
             count += 1

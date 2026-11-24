@@ -58,7 +58,7 @@ class InboxItem(Base):
         SAEnum(InboxSource), default=InboxSource.FILE
     )
     source_file: Mapped[str] = mapped_column(String(512), default="")
-    received_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    received_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
 
     raw_text: Mapped[str] = mapped_column(Text, default="")
     extract_method: Mapped[str] = mapped_column(String(64), default="")

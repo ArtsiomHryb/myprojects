@@ -24,7 +24,7 @@ class UkArticleCache(Base):
     comment: Mapped[str] = mapped_column(Text, default="")
     source_url: Mapped[str] = mapped_column(String(1024), default="")
 
-    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )

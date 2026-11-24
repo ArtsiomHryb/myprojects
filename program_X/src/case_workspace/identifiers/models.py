@@ -78,9 +78,9 @@ class Identifier(Base):
 
     comment: Mapped[str] = mapped_column(String(512), default="")
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
     )
 
 
@@ -95,7 +95,7 @@ class ResolverCache(Base):
     normalized_value: Mapped[str] = mapped_column(String(128), index=True)
     source: Mapped[str] = mapped_column(String(32))
     result_json: Mapped[str] = mapped_column(Text)
-    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     ttl_days: Mapped[int] = mapped_column(Integer, default=30)
 
 

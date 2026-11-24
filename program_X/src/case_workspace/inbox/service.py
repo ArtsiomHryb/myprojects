@@ -200,7 +200,7 @@ class InboxService:
             raise ValueError("Дело не найдено.")
         item.status = InboxStatus.ATTACHED
         item.attached_to_case_id = case_id
-        item.reviewed_at = datetime.utcnow()
+        item.reviewed_at = datetime.now(UTC)
         self.session.commit()
         return item
 
@@ -209,7 +209,7 @@ class InboxService:
         if item is None:
             raise ValueError("Элемент не найден.")
         item.status = InboxStatus.IGNORED
-        item.reviewed_at = datetime.utcnow()
+        item.reviewed_at = datetime.now(UTC)
         self.session.commit()
         return item
 
@@ -218,7 +218,7 @@ class InboxService:
         if item is None:
             raise ValueError("Элемент не найден.")
         item.status = InboxStatus.REVIEWED
-        item.reviewed_at = datetime.utcnow()
+        item.reviewed_at = datetime.now(UTC)
         self.session.commit()
         return item
 

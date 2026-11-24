@@ -7,6 +7,7 @@ import sys
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QApplication
 
+from case_workspace.api.runner import ApiServer
 from case_workspace.auth.service import AuthService
 from case_workspace.db.base import init_db, session_factory
 from case_workspace.db.models import UserAccount
@@ -36,6 +37,13 @@ class Application:
 
         self.engine = init_db()
         self.Session = session_factory(self.engine)
+
+        # Автозапуск локального API (для Telegram-бота)
+        self.api_server = ApiServer(host="127.0.0.1", port=8765)
+        try:
+            self.api_server.start()
+        except Exception:
+            pass
 
         self.login_window: LoginWindow | None = None
         self.register_window: RegisterWindow | None = None
@@ -106,4 +114,9 @@ class Application:
             self.login_window.password.setFocus()
 
     def run(self) -> int:
-        return self.qt_app.exec()
+        rc = self.qt_app.exec()
+        try:
+            self.api_server.stop()
+        except Exception:
+            pass
+        return rc
