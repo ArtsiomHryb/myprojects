@@ -137,6 +137,12 @@ class MainWindow(QMainWindow):
             self.btn_bot.clicked.connect(self._open_bot)
             header.addWidget(self.btn_bot)
 
+        self.btn_theme = QPushButton("🌙")
+        self.btn_theme.setMaximumWidth(40)
+        self.btn_theme.setToolTip("Переключить тему (светлая/тёмная)")
+        self.btn_theme.clicked.connect(self._toggle_theme)
+        header.addWidget(self.btn_theme)
+
         self.btn_logout = QPushButton("Выйти")
         self.btn_logout.clicked.connect(self._logout)
         header.addWidget(self.btn_logout)
@@ -389,6 +395,39 @@ class MainWindow(QMainWindow):
             self.users_window = UsersWindow(self.user, self.auth_service)
         self.users_window.show()
         self.users_window.raise_()
+
+    def _setup_shortcuts(self) -> None:
+        QShortcut(QKeySequence("Ctrl+K"), self, self._on_search)
+        QShortcut(QKeySequence("Ctrl+N"), self, self._new_case)
+        QShortcut(QKeySequence("F5"), self, self._refresh_cases)
+        QShortcut(QKeySequence("Ctrl+L"), self, self._lock_now)
+        QShortcut(QKeySequence("Ctrl+Shift+T"), self, self._toggle_theme)
+
+    def _on_search(self) -> None:
+        dlg = GlobalSearchDialog(
+            self.user, self.case_service, self.session,
+            on_open_case=self._open_case_by_id, parent=self,
+        )
+        dlg.exec()
+
+    def _on_idle_block(self) -> None:
+        if self._lock_window is not None and self._lock_window.isVisible():
+            return
+        self._lock_now()
+
+    def _lock_now(self) -> None:
+        if self._lock_window is not None and self._lock_window.isVisible():
+            return
+        self._lock_window = LockWindow(self.auth_service, self.user, self)
+        self._lock_window.unlocked.connect(self._on_unlocked)
+        self._lock_window.show()
+        self.hide()
+
+    def _on_unlocked(self) -> None:
+        self.show()
+        self.raise_()
+        self._lock_window = None
+        self.idle_service.start()
 
     def _logout(self) -> None:
         if QMessageBox.question(self, "Выход", "Выйти из программы?") != QMessageBox.Yes:

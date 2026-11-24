@@ -23,6 +23,7 @@ from case_workspace.ui.login_window import LoginWindow
 from case_workspace.ui.main_window import MainWindow
 from case_workspace.ui.register_window import RegisterWindow
 from case_workspace.ui.styles import LIGHT_QSS
+from case_workspace.ui.theme_manager import theme_manager
 
 
 class Application:
@@ -32,8 +33,8 @@ class Application:
         self.qt_app = QApplication(sys.argv)
         self.qt_app.setApplicationName("Case Workspace")
         self.qt_app.setStyle("Fusion")
-        self.qt_app.setFont(QFont("Inter", 10))
-        self.qt_app.setStyleSheet(LIGHT_QSS)
+        self.qt_app.setFont(QFont())
+        theme_manager.apply("light")
 
         self.engine = init_db()
         self.Session = session_factory(self.engine)

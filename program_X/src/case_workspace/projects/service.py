@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import date
 
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.orm import Session
 
 from case_workspace.db.models import Role, UserAccount
@@ -90,7 +91,11 @@ class CaseService:
         include_archived: bool = False,
         show_all: bool | None = None,
     ) -> list[Case]:
-        q = select(Case).where(Case.is_episode == False)  # noqa: E712
+        q = (
+            select(Case)
+            .options(selectinload(Case.parties))
+            .where(Case.is_episode == False)  # noqa: E712
+        )
         if not include_archived:
             q = q.where(Case.location_status != LocationStatus.ARCHIVED)
         if show_all is None:
