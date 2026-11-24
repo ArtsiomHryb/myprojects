@@ -33,7 +33,7 @@ class BotSettingsWindow(QWidget):
         self._timer.start(5000)
 
         self.setWindowTitle("Telegram-бот")
-        self.setMinimumSize(720, 480)
+        self.setMinimumSize(650, 450)
         self._build()
         self._refresh_status()
         self._load_token()

@@ -30,7 +30,7 @@ class StorageLocationsWindow(QWidget):
         self.session = session
         self._ids: list[int] = []
         self.setWindowTitle("Локации хранения")
-        self.setMinimumSize(760, 480)
+        self.setMinimumSize(650, 400)
         self._build()
         self.refresh()
 

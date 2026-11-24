@@ -36,7 +36,7 @@ class GlobalSearchDialog(QDialog):
         self.session = session
         self.on_open_case = on_open_case
         self.setWindowTitle("Поиск")
-        self.setMinimumSize(900, 600)
+        self.setMinimumSize(700, 450)
         self._results: list[tuple[int, str]] = []  # (case_id, description)
         self._build()
 

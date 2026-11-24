@@ -53,7 +53,7 @@ class StatsWindow(QWidget):
         self.session = session
         self.service = StatsService(session)
         self.setWindowTitle("Статистика")
-        self.setMinimumSize(1100, 760)
+        self.setMinimumSize(900, 600)
         self._build()
         self.refresh()
 

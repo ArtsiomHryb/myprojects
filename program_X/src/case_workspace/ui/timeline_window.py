@@ -60,7 +60,7 @@ class TimelineWindow(QWidget):
         self._timer.start(30_000)
 
         self.setWindowTitle("Тайминг")
-        self.setMinimumSize(1100, 700)
+        self.setMinimumSize(900, 550)
         self._build()
         self.refresh()
 

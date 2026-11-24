@@ -68,7 +68,7 @@ class CaseWindow(QWidget):
         self.on_close = on_close
 
         self.setWindowTitle(f"Дело {case.case_number or '— эпизод —'}")
-        self.setMinimumSize(900, 640)
+        self.setMinimumSize(800, 550)
         self._build_ui()
         self._refresh_parties()
 

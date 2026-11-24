@@ -90,7 +90,7 @@ class UsersWindow(QWidget):
         self.admin = admin
         self.auth = auth
         self.setWindowTitle("Пользователи")
-        self.setMinimumSize(720, 480)
+        self.setMinimumSize(650, 400)
         self._build()
         self._refresh()
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import date
 from typing import Callable
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QSettings, Qt
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QHBoxLayout,
@@ -83,7 +83,7 @@ class MainWindow(QMainWindow):
         self._suppress_order_signal = False
 
         self.setWindowTitle("Case Workspace")
-        self.setMinimumSize(1200, 760)
+        self.setMinimumSize(1000, 650)
         self._build_ui()
         self._refresh_cases()
 
@@ -395,6 +395,37 @@ class MainWindow(QMainWindow):
             self.users_window = UsersWindow(self.user, self.auth_service)
         self.users_window.show()
         self.users_window.raise_()
+
+    def _restore_geometry(self) -> None:
+        settings = QSettings("CaseWorkspace", "MainWindow")
+        geom = settings.value("geometry")
+        if geom is not None:
+            self.restoreGeometry(geom)
+
+    def closeEvent(self, event) -> None:
+        settings = QSettings("CaseWorkspace", "MainWindow")
+        settings.setValue("geometry", self.saveGeometry())
+        # Закрываем дочерние окна
+        try:
+            for w in getattr(self, "case_windows", []):
+                w.close()
+            for w in (
+                getattr(self, "users_window", None),
+                getattr(self, "templates_window", None),
+                getattr(self, "storage_window", None),
+                getattr(self, "inbox_window", None),
+                getattr(self, "backup_window", None),
+                getattr(self, "timeline_window", None),
+                getattr(self, "stats_window", None),
+                getattr(self, "calendar_window", None),
+                getattr(self, "bot_window", None),
+                getattr(self, "notifications_window", None),
+            ):
+                if w is not None:
+                    w.close()
+        except Exception:
+            pass
+        super().closeEvent(event)
 
     def _setup_shortcuts(self) -> None:
         QShortcut(QKeySequence("Ctrl+K"), self, self._on_search)

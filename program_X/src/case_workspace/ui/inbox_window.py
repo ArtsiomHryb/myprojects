@@ -33,7 +33,7 @@ class _DetailsDialog(QDialog):
         self.item = item
         self.service = service
         self.setWindowTitle(f"Inbox #{item.id} — {item.source.label}")
-        self.setMinimumSize(760, 720)
+        self.setMinimumSize(800, 500)
         self._build()
 
     def _build(self) -> None:
@@ -118,7 +118,7 @@ class InboxWindow(QWidget):
         self.service = InboxService(session)
         self._ids: list[int] = []
         self.setWindowTitle("Неразобранное")
-        self.setMinimumSize(1000, 640)
+        self.setMinimumSize(800, 500)
         self._build()
         self.refresh()
 
@@ -252,7 +252,7 @@ class InboxWindow(QWidget):
     def _paste_text(self) -> None:
         dlg = QDialog(self)
         dlg.setWindowTitle("Вставить текст")
-        dlg.setMinimumSize(600, 500)
+        dlg.setMinimumSize(800, 500)
         layout = QVBoxLayout(dlg)
         layout.addWidget(QLabel("Вставьте текст для анализа:"))
         editor = QTextEdit()

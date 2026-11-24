@@ -31,7 +31,7 @@ class BackupWindow(QWidget):
         self.cases = case_service
         self.backup = BackupService(session)
         self.setWindowTitle("Бэкап")
-        self.setMinimumSize(1000, 660)
+        self.setMinimumSize(800, 500)
         self._build()
         self._refresh_locations()
         self._refresh_cases()

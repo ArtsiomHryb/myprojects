@@ -47,7 +47,7 @@ class DocumentDialog(QDialog):
         self.created_doc_id: int | None = None
 
         self.setWindowTitle(f"Новый документ — {template.name}")
-        self.setMinimumSize(680, 720)
+        self.setMinimumSize(600, 550)
         self._build()
 
     def _build(self) -> None:

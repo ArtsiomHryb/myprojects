@@ -33,7 +33,7 @@ class TemplatesCatalogWindow(QWidget):
         self.is_admin = is_admin
         self._ids: list[int] = []
         self.setWindowTitle("Каталог бланков")
-        self.setMinimumSize(980, 620)
+        self.setMinimumSize(750, 450)
         self._build()
         self.refresh()
 

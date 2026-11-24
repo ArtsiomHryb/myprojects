@@ -26,7 +26,7 @@ class ArticleWindow(QDialog):
         self.part = part
         self.legal = legal_service
         self.setWindowTitle(f"Статья {code} ч.{part} УК РБ")
-        self.setMinimumSize(760, 720)
+        self.setMinimumSize(650, 550)
         self._build()
         self._load()
 
