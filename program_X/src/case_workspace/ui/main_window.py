@@ -429,6 +429,44 @@ class MainWindow(QMainWindow):
         self._lock_window = None
         self.idle_service.start()
 
+    def _open_bot(self) -> None:
+        if self.bot_window is None:
+            self.bot_window = BotSettingsWindow("http://127.0.0.1:8765")
+        self.bot_window.show()
+        self.bot_window.raise_()
+        self.bot_window._refresh_status()
+
+    def _open_notifications(self) -> None:
+        if self.notifications_window is None:
+            self.notifications_window = NotificationsWindow(
+                self.session, on_update_badge=self._update_notif_badge
+            )
+        self.notifications_window.show()
+        self.notifications_window.raise_()
+        self.notifications_window._refresh_all()
+
+    def _update_notif_badge(self) -> None:
+        if not hasattr(self, "btn_notifications"):
+            return
+        try:
+            from case_workspace.auth_api.notifications import NotificationService
+            count = len(NotificationService(self.session).list_unread())
+        except Exception:
+            return
+        if count > 0:
+            self.btn_notifications.setText(f"Уведомления ({count})")
+            self.btn_notifications.setStyleSheet(
+                "background-color: #DC2626; color: white; font-weight: 600;"
+            )
+        else:
+            self.btn_notifications.setText("Уведомления")
+            self.btn_notifications.setStyleSheet("")
+
+    def _toggle_theme(self) -> None:
+        from case_workspace.ui.theme_manager import theme_manager
+        new = theme_manager.toggle()
+        self.btn_theme.setText("☀" if new == "dark" else "🌙")
+
     def _logout(self) -> None:
         if QMessageBox.question(self, "Выход", "Выйти из программы?") != QMessageBox.Yes:
             return
