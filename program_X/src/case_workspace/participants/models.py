@@ -9,6 +9,7 @@ from sqlalchemy import Date, DateTime, Enum as SAEnum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from case_workspace.db.models import Base
+from case_workspace.utils.time import utc_now
 
 
 class PartyRole(str, enum.Enum):
@@ -42,9 +43,9 @@ class Party(Base):
     contact_phone: Mapped[str] = mapped_column(String(32), default="")
     comment: Mapped[str] = mapped_column(Text, default="")
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
+        DateTime, default=utc_now, onupdate=utc_now
     )
 
     case: Mapped["Case"] = relationship(back_populates="parties")

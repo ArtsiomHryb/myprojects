@@ -16,6 +16,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column
 
 from case_workspace.db.models import Base
+from case_workspace.utils.time import utc_now
 
 
 class InboxSource(str, enum.Enum):
@@ -58,7 +59,7 @@ class InboxItem(Base):
         SAEnum(InboxSource), default=InboxSource.FILE
     )
     source_file: Mapped[str] = mapped_column(String(512), default="")
-    received_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    received_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     raw_text: Mapped[str] = mapped_column(Text, default="")
     extract_method: Mapped[str] = mapped_column(String(64), default="")

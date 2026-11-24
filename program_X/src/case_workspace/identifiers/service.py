@@ -22,6 +22,7 @@ from case_workspace.identifiers.validators import (
     validate_iban,
     validate_ip,
 )
+from case_workspace.utils.time import utc_now
 
 
 class IdentifierService:
@@ -39,7 +40,7 @@ class IdentifierService:
         )
         if row is None:
             return None
-        age_days = (datetime.now(UTC) - row.fetched_at).days
+        age_days = (utc_now() - row.fetched_at).days
         if age_days > row.ttl_days:
             return None
         try:
@@ -70,7 +71,7 @@ class IdentifierService:
             )
         else:
             row.result_json = payload
-            row.fetched_at = datetime.now(UTC)
+            row.fetched_at = utc_now()
             row.ttl_days = ttl_days
         self.session.commit()
 
@@ -193,7 +194,7 @@ class IdentifierService:
             ),
             verification_status=VerificationStatus(result["verification_status"]),
             verified_at=(
-                datetime.now(UTC)
+                utc_now()
                 if result["local"] or result["online"]
                 else None
             ),

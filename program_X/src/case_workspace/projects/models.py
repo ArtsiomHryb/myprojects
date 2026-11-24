@@ -18,6 +18,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from case_workspace.db.models import Base
+from case_workspace.utils.time import utc_now
 
 
 class LocationStatus(str, enum.Enum):
@@ -92,9 +93,9 @@ class Case(Base):
 
     owner_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"), index=True)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
+        DateTime, default=utc_now, onupdate=utc_now
     )
 
     parties: Mapped[list["Party"]] = relationship(
@@ -130,7 +131,7 @@ class CaseEvent(Base):
     date: Mapped[date] = mapped_column(Date)
     to_address: Mapped[str] = mapped_column(String(255), default="")
     comment: Mapped[str] = mapped_column(Text, default="")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
 
 class DeadlineExtension(Base):
@@ -141,7 +142,7 @@ class DeadlineExtension(Base):
     old_deadline: Mapped[date] = mapped_column(Date)
     new_deadline: Mapped[date] = mapped_column(Date)
     reason: Mapped[str] = mapped_column(String(512), default="")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
 
 class Tag(Base):
@@ -165,9 +166,9 @@ class Note(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     case_id: Mapped[int] = mapped_column(ForeignKey("case.id"), index=True)
     text: Mapped[str] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
+        DateTime, default=utc_now, onupdate=utc_now
     )
 
 class CaseDesktopPosition(Base):

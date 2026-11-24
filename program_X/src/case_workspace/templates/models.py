@@ -9,6 +9,7 @@ from sqlalchemy import Boolean, DateTime, Enum as SAEnum, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from case_workspace.db.models import Base
+from case_workspace.utils.time import utc_now
 
 
 class TemplateCategory(str, enum.Enum):
@@ -47,7 +48,7 @@ class Template(Base):
     version: Mapped[int] = mapped_column(Integer, default=1)
     comment: Mapped[str] = mapped_column(Text, default="")
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
+        DateTime, default=utc_now, onupdate=utc_now
     )

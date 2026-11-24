@@ -9,6 +9,7 @@ from sqlalchemy import Boolean, Date, DateTime, Enum as SAEnum, ForeignKey, Stri
 from sqlalchemy.orm import Mapped, mapped_column
 
 from case_workspace.db.models import Base
+from case_workspace.utils.time import utc_now
 
 
 class EventType(str, enum.Enum):
@@ -41,7 +42,7 @@ class CalendarEvent(Base):
     description: Mapped[str] = mapped_column(Text, default="")
     done: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
+        DateTime, default=utc_now, onupdate=utc_now
     )

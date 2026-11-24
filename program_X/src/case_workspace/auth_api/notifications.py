@@ -13,6 +13,7 @@ from case_workspace.auth_api.models import (
     NotificationType,
     Severity,
 )
+from case_workspace.utils.time import utc_now
 
 
 class NotificationService:
@@ -61,7 +62,7 @@ class NotificationService:
         n = self.session.get(Notification, notification_id)
         if n is None:
             return False
-        n.read_at = datetime.now(UTC)
+        n.read_at = utc_now()
         self.session.commit()
         return True
 
@@ -71,7 +72,7 @@ class NotificationService:
                 select(Notification).where(Notification.read_at == None)  # noqa: E712
             )
         )
-        now = datetime.now(UTC)
+        now = utc_now()
         for n in rows:
             n.read_at = now
         self.session.commit()

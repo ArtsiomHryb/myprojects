@@ -10,6 +10,7 @@ from case_workspace.auth import security
 from case_workspace.auth.service import AuthService
 from case_workspace.db.models import Base, UserAccount
 from case_workspace.domain import errors
+from case_workspace.utils.time import utc_now
 
 VALID_PASSWORD = "AaBb123!"
 
@@ -87,7 +88,7 @@ def test_lockout_expires_and_resets(session) -> None:
 
     # Принудительно истекаем блокировку
     stored = session.get(UserAccount, user.id)
-    stored.locked_until = datetime.now(UTC) - timedelta(minutes=1)
+    stored.locked_until = utc_now() - timedelta(minutes=1)
     session.commit()
 
     authed = auth.authenticate("admin", VALID_PASSWORD)

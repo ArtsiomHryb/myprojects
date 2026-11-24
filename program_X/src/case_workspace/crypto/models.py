@@ -17,6 +17,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column
 
 from case_workspace.db.models import Base
+from case_workspace.utils.time import utc_now
 
 
 class CryptoNetwork(str, enum.Enum):
@@ -66,9 +67,9 @@ class CryptoWallet(Base):
     label: Mapped[str] = mapped_column(String(255), default="")
     comment: Mapped[str] = mapped_column(Text, default="")
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
+        DateTime, default=utc_now, onupdate=utc_now
     )
 
     @property
@@ -148,9 +149,9 @@ class SocialAccount(Base):
     label: Mapped[str] = mapped_column(String(255), default="")
     notes: Mapped[str] = mapped_column(Text, default="")
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
+        DateTime, default=utc_now, onupdate=utc_now
     )
 
     @property

@@ -20,6 +20,7 @@ from case_workspace.documents.models import (
 )
 from case_workspace.participants.models import Party
 from case_workspace.projects.models import Case
+from case_workspace.utils.time import utc_now
 
 
 class BackupService:
@@ -37,12 +38,12 @@ class BackupService:
             test_file = p / ".case_workspace_write_test"
             test_file.write_text("ok", encoding="utf-8")
             test_file.unlink()
-            loc.last_check_at = datetime.now(UTC)
+            loc.last_check_at = utc_now()
             loc.last_check_ok = True
             self.session.commit()
             return True, f"OK: {p}"
         except Exception as exc:  # noqa: BLE001
-            loc.last_check_at = datetime.now(UTC)
+            loc.last_check_at = utc_now()
             loc.last_check_ok = False
             self.session.commit()
             return False, f"Ошибка доступа: {exc}"
@@ -89,7 +90,7 @@ class BackupService:
             self.session.scalars(select(Document).where(Document.case_id == case.id))
         )
         return {
-            "exported_at": datetime.now(UTC).isoformat(),
+            "exported_at": utc_now().isoformat(),
             "case": {
                 "id": case.id,
                 "case_number": case.case_number,

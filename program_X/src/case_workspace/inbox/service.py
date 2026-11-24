@@ -19,6 +19,7 @@ from case_workspace.inbox.models import (
 from case_workspace.identifiers.validators import normalize
 from case_workspace.participants.models import Party
 from case_workspace.projects.models import Case
+from case_workspace.utils.time import utc_now
 
 
 class InboxService:
@@ -200,7 +201,7 @@ class InboxService:
             raise ValueError("Дело не найдено.")
         item.status = InboxStatus.ATTACHED
         item.attached_to_case_id = case_id
-        item.reviewed_at = datetime.now(UTC)
+        item.reviewed_at = utc_now()
         self.session.commit()
         return item
 
@@ -209,7 +210,7 @@ class InboxService:
         if item is None:
             raise ValueError("Элемент не найден.")
         item.status = InboxStatus.IGNORED
-        item.reviewed_at = datetime.now(UTC)
+        item.reviewed_at = utc_now()
         self.session.commit()
         return item
 
@@ -218,7 +219,7 @@ class InboxService:
         if item is None:
             raise ValueError("Элемент не найден.")
         item.status = InboxStatus.REVIEWED
-        item.reviewed_at = datetime.now(UTC)
+        item.reviewed_at = utc_now()
         self.session.commit()
         return item
 

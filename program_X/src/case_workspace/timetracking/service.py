@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from case_workspace.timetracking.models import TimeEntry
+from case_workspace.utils.time import utc_now
 
 
 def _fmt_duration(seconds: int) -> str:
@@ -56,7 +57,7 @@ class TimeService:
             return running
         entry = self.get_or_create(case_id)
         entry.is_running = True
-        entry.started_at = datetime.now(UTC)
+        entry.started_at = utc_now()
         self.session.commit()
         return entry
 
@@ -66,7 +67,7 @@ class TimeService:
             return None
         if running.started_at:
             running.accumulated_seconds += int(
-                (datetime.now(UTC) - running.started_at).total_seconds()
+                (utc_now() - running.started_at).total_seconds()
             )
         running.is_running = False
         running.started_at = None

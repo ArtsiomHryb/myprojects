@@ -26,6 +26,7 @@ from case_workspace.participants.models import Party, PartyRole
 from case_workspace.projects.models import Case
 from case_workspace.templates.models import Template
 from case_workspace.templates.service import TemplateService
+from case_workspace.utils.time import utc_now
 
 MONTHS_RU = [
     "января", "февраля", "марта", "апреля", "мая", "июня",
@@ -203,8 +204,8 @@ class DocumentService:
             },
             ensure_ascii=False,
         )
-        doc.rendered_at = datetime.now(UTC)
-        doc.saved_at = datetime.now(UTC)
+        doc.rendered_at = utc_now()
+        doc.saved_at = utc_now()
 
         self._backup_to_locations(doc, docx_path)
         if pdf_path:

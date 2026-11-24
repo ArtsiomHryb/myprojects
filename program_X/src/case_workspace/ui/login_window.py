@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
 from case_workspace.auth.service import AuthService
 from case_workspace.db.models import UserAccount
 from case_workspace.domain import errors
+from case_workspace.utils.time import utc_now
 
 
 # ~7 см при 96 DPI
@@ -228,7 +229,7 @@ class LoginWindow(QWidget):
     def _tick_lock(self) -> None:
         if self._locked_until is None:
             return
-        now = datetime.now(UTC)
+        now = utc_now()
         if now >= self._locked_until:
             self._timer.stop()
             self._locked_until = None

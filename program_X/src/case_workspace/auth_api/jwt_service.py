@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 from case_workspace.auth_api.models import SessionToken
 from case_workspace.auth.service import AuthService
 from case_workspace.db.models import UserAccount
+from case_workspace.utils.time import utc_now
 
 JWT_SECRET_KEY = "case_workspace_local_secret_change_me"  # в проде — из keyring
 JWT_ALGORITHM = "HS256"
@@ -36,7 +37,7 @@ class ApiAuthService:
         user: UserAccount = self.auth.authenticate(username, password)
 
         jti = secrets.token_urlsafe(32)
-        expires_at = datetime.now(UTC) + timedelta(hours=TOKEN_TTL_HOURS)
+        expires_at = utc_now() + timedelta(hours=TOKEN_TTL_HOURS)
 
         payload = {
             "sub": str(user.id),
@@ -84,7 +85,7 @@ class ApiAuthService:
         if st is None or st.revoked_at is not None:
             return None
 
-        st.last_activity = datetime.now(UTC)
+        st.last_activity = utc_now()
         self.session.commit()
         return payload
 
@@ -92,7 +93,7 @@ class ApiAuthService:
         st = self.session.scalar(select(SessionToken).where(SessionToken.jti == jti))
         if st is None:
             return False
-        st.revoked_at = datetime.now(UTC)
+        st.revoked_at = utc_now()
         self.session.commit()
         return True
 
@@ -106,7 +107,7 @@ class ApiAuthService:
             )
         )
         count = 0
-        now = datetime.now(UTC)
+        now = utc_now()
         for st in rows:
             st.revoked_at = now
             count += 1

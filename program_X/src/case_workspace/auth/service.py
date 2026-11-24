@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from case_workspace.auth import security
 from case_workspace.db.models import AuthAttemptLog, Role, UserAccount
 from case_workspace.domain import errors
+from case_workspace.utils.time import utc_now
 
 
 class AuthService:
@@ -65,7 +66,7 @@ class AuthService:
 
     def authenticate(self, login: str, password: str) -> UserAccount:
         login_norm = login.strip().lower()
-        now = datetime.now(UTC)
+        now = utc_now()
         user = self.session.scalar(select(UserAccount).where(UserAccount.login == login_norm))
         if user is None:
             self._log(login_norm, "invalid", 0, 0)

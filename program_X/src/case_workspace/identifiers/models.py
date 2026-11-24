@@ -17,6 +17,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column
 
 from case_workspace.db.models import Base
+from case_workspace.utils.time import utc_now
 
 
 class IdentifierType(str, enum.Enum):
@@ -78,9 +79,9 @@ class Identifier(Base):
 
     comment: Mapped[str] = mapped_column(String(512), default="")
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
+        DateTime, default=utc_now, onupdate=utc_now
     )
 
 
@@ -95,7 +96,7 @@ class ResolverCache(Base):
     normalized_value: Mapped[str] = mapped_column(String(128), index=True)
     source: Mapped[str] = mapped_column(String(32))
     result_json: Mapped[str] = mapped_column(Text)
-    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     ttl_days: Mapped[int] = mapped_column(Integer, default=30)
 
 

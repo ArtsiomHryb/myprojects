@@ -8,6 +8,7 @@ from sqlalchemy import DateTime, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from case_workspace.db.models import Base
+from case_workspace.utils.time import utc_now
 
 
 class UkArticleCache(Base):
@@ -24,7 +25,7 @@ class UkArticleCache(Base):
     comment: Mapped[str] = mapped_column(Text, default="")
     source_url: Mapped[str] = mapped_column(String(1024), default="")
 
-    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    fetched_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC)
+        DateTime, default=utc_now, onupdate=utc_now
     )

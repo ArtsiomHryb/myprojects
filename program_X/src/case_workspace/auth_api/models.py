@@ -16,6 +16,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column
 
 from case_workspace.db.models import Base
+from case_workspace.utils.time import utc_now
 
 
 class SessionToken(Base):
@@ -26,9 +27,9 @@ class SessionToken(Base):
     username: Mapped[str] = mapped_column(String(128), default="")
     jti: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     role: Mapped[str] = mapped_column(String(16), default="user")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     expires_at: Mapped[datetime] = mapped_column(DateTime)
-    last_activity: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    last_activity: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
@@ -66,7 +67,7 @@ class Notification(Base):
     body: Mapped[str] = mapped_column(Text, default="")
     source: Mapped[str] = mapped_column(String(32), default="program")
     metadata_json: Mapped[str] = mapped_column(Text, default="")
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now, index=True)
     read_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
@@ -76,5 +77,5 @@ class TelegramBlacklist(Base):
     telegram_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     username: Mapped[str] = mapped_column(String(128), default="")
     reason: Mapped[str] = mapped_column(String(512), default="")
-    blocked_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
+    blocked_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
     blocked_by: Mapped[str] = mapped_column(String(16), default="auto")  # auto/admin
